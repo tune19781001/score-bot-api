@@ -47,4 +47,4 @@ def upload_file_to_drive(file_path, credentials_file="credentials.json", token_f
 
 # スクリプト単体実行用（任意）
 if __name__ == "__main__":
-    upload_file_to_drive("_
+    upload_file_to_drive("conversation_history.json")
