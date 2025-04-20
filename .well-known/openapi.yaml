@@ -92,10 +92,10 @@ paths:
                   status:
                     type: string
 
-  /function_call:
+  /memory:
     post:
-      operationId: function_call
-      summary: 決まった関数を呼び出します
+      summary: 記憶に基づいた返答を行います
+      operationId: memory_check
       requestBody:
         required: true
         content:
@@ -103,22 +103,15 @@ paths:
             schema:
               type: object
               properties:
-                function:
+                input:
                   type: string
-                  example: evaluate_market_conditions
-                args:
-                  type: object
-                  properties:
-                    spy:
-                      type: number
-                      example: 1.2
-                    rsi:
-                      type: number
-                      example: 29
-                    vix:
-                      type: number
-                      example: 18
       responses:
-        '200':
-          description: 成功時の応答
-　
+        "200":
+          description: Memory Botの応答
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response:
+                    type: string
