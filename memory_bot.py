@@ -1,6 +1,6 @@
 import os
 import json
-from upload_to_drive import upload_to_drive
+from upload_to_drive import upload_file_to_drive  # ← 修正ポイント！
 from langchain_openai import OpenAIEmbeddings
 from langchain_pinecone import Pinecone as LangchainPinecone
 from langchain.memory import VectorStoreRetrieverMemory
@@ -32,8 +32,8 @@ def save_conversation_to_file():
         json.dump(data, f, ensure_ascii=False, indent=2)
     print("✅ 会話履歴をファイルに保存しました")
 
-    # ✅ Google Drive にアップロード
-    upload_to_drive()
+    # ✅ Google Drive にアップロード（← 修正ポイント！）
+    upload_file_to_drive("conversation_history.json")
 
 # ✅ 判断ログ保存
 def save_judgment(input_text: str, result: str):
