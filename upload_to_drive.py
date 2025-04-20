@@ -24,7 +24,7 @@ def upload_file_to_drive(file_path, credentials_file="credentials.json", token_f
         creds = Credentials.from_authorized_user_file(token_file, SCOPES)
 
     if not creds or not creds.valid:
-        creds = flow.run_console()
+        creds = flow.run_local_server(open_browser=False, port=0)  # ← ここが修正点！
         with open(token_file, "w") as token:
             token.write(creds.to_json())
 
