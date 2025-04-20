@@ -1,0 +1,17 @@
+{
+  "schema_version": "v1",
+  "name_for_human": "投資判断ログBot",
+  "name_for_model": "judgmentLogBot",
+  "description_for_human": "RSI, VIX, ROEなどの指標をもとに投資判断をスコア化し、過去の判断も記録・検索できるBotです。",
+  "description_for_model": "This API receives market and technical indicators (e.g., RSI, VIX, ROE) and returns a judgment score with detailed comments. It also stores judgments in Pinecone and supports semantic search for similar past decisions.",
+  "auth": {
+    "type": "none"
+  },
+  "api": {
+    "type": "openapi",
+    "url": "https://score-api-3pbw.onrender.com/.well-known/openapi.yaml"
+  },
+  "logo_url": "https://score-api-3pbw.onrender.com/logo.png",
+  "contact_email": "tsunekawa.t@gmail.com",
+  "legal_info_url": "https://score-api-3pbw.onrender.com/legal"
+}

@@ -1,0 +1,106 @@
+openapi: 3.1.0
+info:
+  title: スコア評価Bot API
+  description: 投資判断スコアを返すAPI。RSI, VIXなどを元に総合スコアとコメントを返します。
+  version: 1.0.0
+servers:
+  - url: https://score-api-3pbw.onrender.com
+paths:
+  /score:
+    post:
+      summary: 市場情報からスコア評価を取得する
+      operationId: getScore
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                spy:
+                  type: number
+                  description: SPYの変動率（例：1.2）
+                qqq:
+                  type: number
+                  description: QQQの変動率（例：0.8）
+                vix:
+                  type: number
+                  description: VIXの数値（例：17.5）
+                usd_jpy:
+                  type: number
+                  description: 為替レート（例：149.3）
+                rsi:
+                  type: number
+                  description: RSI（例：29.5）
+                volume_ratio:
+                  type: number
+                  description: 出来高倍率（例：1.6）
+                ma_break:
+                  type: boolean
+                  description: 移動平均線のブレイク有無
+                roe:
+                  type: number
+                  description: ROE（例：12.0）
+                profit_margin:
+                  type: number
+                  description: 利益率（例：18.5）
+              required:
+                - spy
+                - qqq
+                - vix
+                - usd_jpy
+                - rsi
+                - volume_ratio
+                - ma_break
+                - roe
+                - profit_margin
+      responses:
+        "200":
+          description: 正常にスコアが返されたとき
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  score:
+                    type: number
+                    description: 総合スコア
+                  comments:
+                    type: array
+                    description: 評価コメント一覧
+                    items:
+                      type: string
+                  judgment:
+                    type: string
+                    description: 最終判定（例：強気判断）
+
+  /save_judgment:
+    post:
+      summary: 判断結果を記憶に保存する
+      operationId: saveJudgment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                input:
+                  type: string
+                  description: 判断に使った自然文（例：VIXが18でRSIが29だった）
+                result:
+                  type: string
+                  description: 結果として出した判断（例：強気判断）
+              required:
+                - input
+                - result
+      responses:
+        "200":
+          description: 記録完了メッセージ
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
