@@ -3,6 +3,7 @@ info:
   title: スコア評価Bot API
   description: 投資判断スコアを返すAPI。RSI, VIXなどを元に総合スコアとコメントを返します。
   version: 1.0.0
+x-openai-isConsequential: true   
 servers:
   - url: https://score-bot-api.onrender.com
 
