@@ -121,3 +121,4 @@ paths:
       responses:
         '200':
           description: 成功時の応答
+　
