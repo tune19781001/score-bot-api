@@ -8,6 +8,7 @@ from memory_bot import (
     get_response
 )
 from functions import evaluate_market_conditions  # ✅ 関数呼び出し追加！
+from upload_to_drive import upload_file_to_drive  # ✅ Drive連携を追加
 
 app = Flask(__name__)
 
@@ -107,6 +108,11 @@ def save():
         return jsonify({"error": "input and result are required"}), 400
 
     save_judgment(input_text, result)
+
+    # ✅ Google Driveにアップロードする（必要ならファイルパス調整）
+    upload_file_to_drive("judgments.pkl")
+    upload_file_to_drive("faiss.index")
+
     return jsonify({"status": "Saved!"})
 
 # 類似履歴検索
