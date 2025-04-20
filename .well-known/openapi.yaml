@@ -115,3 +115,36 @@ paths:
                 properties:
                   response:
                     type: string
+  /search_similar:
+    post:
+      summary: 類似する判断履歴を検索する
+      operationId: searchSimilar
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                input:
+                  type: string
+                  description: 検索したい自然文
+              required:
+                - input
+      responses:
+        "200":
+          description: 類似履歴が返される
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        input:
+                          type: string
+                        output:
+                          type: string
