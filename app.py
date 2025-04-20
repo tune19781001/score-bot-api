@@ -10,7 +10,17 @@ from memory_bot import (
 
 app = Flask(__name__)
 
-# Score evaluation logic
+# ✅ UptimeRobot用 pingエンドポイント
+@app.route("/ping")
+def ping():
+    return "pong", 200
+
+# API起動確認用
+@app.route("/")
+def index():
+    return "Score Evaluation API is running!"
+
+# スコア計算ロジック
 def score_evaluation(inputs):
     total = 0
     comments = []
@@ -24,7 +34,6 @@ def score_evaluation(inputs):
     if 145 <= inputs["usd_jpy"] <= 155:
         total += 1
         comments.append("Stable exchange rate")
-
     if inputs["rsi"] < 30:
         total += 2
         comments.append("RSI below 30 - oversold, rebound expected")
@@ -34,7 +43,6 @@ def score_evaluation(inputs):
     if inputs["ma_break"]:
         total += 1
         comments.append("Price broke above MA")
-
     if inputs["roe"] > 10:
         total += 1
         comments.append("ROE > 10% - good efficiency")
@@ -44,7 +52,7 @@ def score_evaluation(inputs):
 
     return total, comments
 
-# Final judgment logic
+# 最終判断ロジック
 def judge(score):
     if score >= 15:
         return "Strong Buy"
@@ -55,10 +63,7 @@ def judge(score):
     else:
         return "Sell"
 
-@app.route("/")
-def index():
-    return "Score Evaluation API is running!"
-
+# スコア取得API
 @app.route("/score", methods=["POST"])
 def score():
     data = request.json
@@ -77,6 +82,7 @@ def score():
 
     return jsonify(result)
 
+# 判断結果の保存
 @app.route("/save_judgment", methods=["POST"])
 def save():
     data = request.json
@@ -89,6 +95,7 @@ def save():
     save_judgment(input_text, result)
     return jsonify({"status": "Saved!"})
 
+# 類似履歴検索
 @app.route("/search_similar", methods=["POST"])
 def search():
     data = request.json
@@ -103,16 +110,17 @@ def search():
     pairs = [{"input": lines[i][7:], "output": lines[i + 1][8:]} for i in range(0, len(lines)-1, 2)]
     return jsonify({"results": pairs})
 
+# 会話履歴取得
 @app.route("/conversation_history", methods=["GET"])
 def history():
     history_text = get_conversation_history(limit=3)
     return jsonify({"history": history_text})
 
+# メモリBotテスト用
 @app.route("/memory", methods=["GET", "POST"])
 def memory_check():
     if request.method == "GET":
         return "Memory bot is alive!"
-
     try:
         input_text = request.json.get("input", "")
         response = get_response(input_text)
@@ -120,20 +128,16 @@ def memory_check():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# GPTs用 .well-known 配信
+# GPTs用 OpenAPI 配信
 @app.route('/.well-known/<path:filename>')
 def well_known_static(filename):
     return send_from_directory('.well-known', filename)
 
 @app.route('/.well-known/openapi.yaml')
 def serve_openapi_yaml():
-    return send_from_directory(
-        '.well-known',
-        'openapi.yaml',
-        mimetype='application/yaml'
-    )
+    return send_from_directory('.well-known', 'openapi.yaml', mimetype='application/yaml')
 
-# Flask startup for Render
+# Flask起動
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
