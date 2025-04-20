@@ -1,32 +1,16 @@
 import os
 import mimetypes
-import json
-from google.oauth2.credentials import Credentials
-from google_auth_oauthlib.flow import InstalledAppFlow
+from google.oauth2 import service_account
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
 
-def upload_file_to_drive(file_path, credentials_file="credentials.json", token_file="token.json"):
+def upload_file_to_drive(file_path):
     SCOPES = ["https://www.googleapis.com/auth/drive.file"]
-    creds = None
 
-    # ✅ credentials.json の代わりに環境変数から読み込み
-    if "GOOGLE_CREDENTIALS_JSON" in os.environ:
-        credentials_data = json.loads(os.environ["GOOGLE_CREDENTIALS_JSON"])
-        flow = InstalledAppFlow.from_client_config(credentials_data, SCOPES)
-    elif os.path.exists(credentials_file):
-        flow = InstalledAppFlow.from_client_secrets_file(credentials_file, SCOPES)
-    else:
-        raise FileNotFoundError("Google認証情報が見つかりません（credentials.json または GOOGLE_CREDENTIALS_JSON）")
-
-    # ✅ 認証トークン処理
-    if os.path.exists(token_file):
-        creds = Credentials.from_authorized_user_file(token_file, SCOPES)
-
-    if not creds or not creds.valid:
-        creds = flow.run_local_server(open_browser=False, port=0)  # ← ここが修正点！
-        with open(token_file, "w") as token:
-            token.write(creds.to_json())
+    # ✅ サービスアカウントで認証
+    creds = service_account.Credentials.from_service_account_file(
+        "service_account.json", scopes=SCOPES
+    )
 
     # ✅ Driveにアップロード
     service = build("drive", "v3", credentials=creds)
@@ -46,6 +30,7 @@ def upload_file_to_drive(file_path, credentials_file="credentials.json", token_f
         service.files().create(body=file_metadata, media_body=media).execute()
         print(f"✅ {file_path} をGoogle Driveに新規アップロードしました。")
 
-# スクリプト単体実行用（任意）
+# テスト実行（任意）
 if __name__ == "__main__":
     upload_file_to_drive("conversation_history.json")
+
