@@ -4,7 +4,8 @@ info:
   description: 投資判断スコアを返すAPI。RSI, VIXなどを元に総合スコアとコメントを返します。
   version: 1.0.0
 servers:
-  - url: https://score-api-3pbw.onrender.com
+  - url: https://score-bot-api.onrender.com
+
 paths:
   /score:
     post:
@@ -19,31 +20,22 @@ paths:
               properties:
                 spy:
                   type: number
-                  description: SPYの変動率（例：1.2）
                 qqq:
                   type: number
-                  description: QQQの変動率（例：0.8）
                 vix:
                   type: number
-                  description: VIXの数値（例：17.5）
                 usd_jpy:
                   type: number
-                  description: 為替レート（例：149.3）
                 rsi:
                   type: number
-                  description: RSI（例：29.5）
                 volume_ratio:
                   type: number
-                  description: 出来高倍率（例：1.6）
                 ma_break:
                   type: boolean
-                  description: 移動平均線のブレイク有無
                 roe:
                   type: number
-                  description: ROE（例：12.0）
                 profit_margin:
                   type: number
-                  description: 利益率（例：18.5）
               required:
                 - spy
                 - qqq
@@ -64,15 +56,12 @@ paths:
                 properties:
                   score:
                     type: number
-                    description: 総合スコア
                   comments:
                     type: array
-                    description: 評価コメント一覧
                     items:
                       type: string
                   judgment:
                     type: string
-                    description: 最終判定（例：強気判断）
 
   /save_judgment:
     post:
@@ -87,10 +76,8 @@ paths:
               properties:
                 input:
                   type: string
-                  description: 判断に使った自然文（例：VIXが18でRSIが29だった）
                 result:
                   type: string
-                  description: 結果として出した判断（例：強気判断）
               required:
                 - input
                 - result
@@ -104,3 +91,33 @@ paths:
                 properties:
                   status:
                     type: string
+
+  /function_call:
+    post:
+      operationId: function_call
+      summary: 決まった関数を呼び出します
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                function:
+                  type: string
+                  example: evaluate_market_conditions
+                args:
+                  type: object
+                  properties:
+                    spy:
+                      type: number
+                      example: 1.2
+                    rsi:
+                      type: number
+                      example: 29
+                    vix:
+                      type: number
+                      example: 18
+      responses:
+        '200':
+          description: 成功時の応答
