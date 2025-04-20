@@ -7,6 +7,7 @@ from memory_bot import (
     get_conversation_history,
     get_response
 )
+from functions import evaluate_market_conditions  # ✅ 関数呼び出し追加！
 
 app = Flask(__name__)
 
@@ -81,6 +82,19 @@ def score():
     save_judgment(str(data), judgment)
 
     return jsonify(result)
+
+# Function Calling API
+@app.route("/function_call", methods=["POST"])
+def function_call():
+    data = request.json
+    function_name = data.get("function")
+    args = data.get("args", {})
+
+    if function_name == "evaluate_market_conditions":
+        result = evaluate_market_conditions(args)
+        return jsonify(result)
+
+    return jsonify({"error": "Function not found"}), 400
 
 # 判断結果の保存
 @app.route("/save_judgment", methods=["POST"])
