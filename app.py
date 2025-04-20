@@ -149,7 +149,7 @@ def well_known_static(filename):
 
 @app.route('/.well-known/openapi.yaml')
 def serve_openapi_yaml():
-    return send_from_directory('.well-known', 'openapi.yaml', mimetype='application/yaml')
+    return send_from_directory('.well-known', 'openapi.yaml', mimetype='application/x-yaml')
 
 # Flask起動
 if __name__ == "__main__":
